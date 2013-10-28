@@ -1,0 +1,6 @@
+[submodule "external/DefinitelyTyped"]
+	path = external/DefinitelyTyped
+	url = https://github.com/Igorbek/DefinitelyTyped.git
+[submodule "external/RxJS"]
+	path = external/RxJS
+	url = https://github.com/Reactive-Extensions/RxJS.git
