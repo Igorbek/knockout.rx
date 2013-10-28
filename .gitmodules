@@ -4,3 +4,6 @@
 [submodule "external/RxJS"]
 	path = external/RxJS
 	url = https://github.com/Reactive-Extensions/RxJS.git
+[submodule "external/knockout"]
+	path = external/knockout
+	url = https://github.com/knockout/knockout.git
