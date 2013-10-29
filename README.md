@@ -2,6 +2,9 @@
 
 Reactive Extensions bindings for the KnockoutJS
 
+## Download
+
+You can download built library from `out` folder in the repository.
 
 ## Usage
 
@@ -16,6 +19,15 @@ var rxObservable = koSubscribable.toObservable(event?: string);
 - `rxObservable` *return* - resulting Rx observable object
 - `koSubscribable` - source Knockout subscribable object (observable, computed)
 - `event` *optional* - event of subscribable to observe; if not specified, used default event for this subscribable (usually 'change' event).
+
+```javascript
+var rxObservable = koObservableOrComputed.toObservableWithReplyLatest();
+```
+
+- `rxObservable` *return* - resulting Rx observable object
+- `koObservableOrComputed` - source Knockout observable or computed object
+
+*Note*: `toObservableWithReplyLatest` returns Rx observable that will notify every observer with latest (current) Ko observable (or computed) value once it subscribed.
 
 ### Rx to Knockout observale
 
