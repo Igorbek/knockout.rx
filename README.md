@@ -1,10 +1,17 @@
-# knockout.rx
+# knockout.rx <sup>0.1 RC</sup>
 
 Reactive Extensions bindings for the KnockoutJS
 
 ## Download
 
-You can download built library from `out` folder in the repository.
+### NuGet
+
+Package: [knockout.rx](https://www.nuget.org/packages/knockout.rx/)
+```
+PM> Install-Package knockout.rx -Pre
+```
+
+Or you can download it from [Releases](https://github.com/Igorbek/knockout.rx/releases) of the project.
 
 ## Usage
 
