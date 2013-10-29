@@ -62,6 +62,8 @@ test("Rx.IObservable.toKoSubscribable()", () => {
 	xo.subscribe<Error>(err => equal(err.message, "some error", "catch error by 'error' event"), null, "error");
 
 	xs.onError(new Error("some error"));
+
+	throws(() => xo.subscribe(() => { }, null, "some"), "disallow unknown event types");
 });
 
 test("Rx.IObservable.toKoSubscribable() - onComplete", () => {
@@ -101,7 +103,7 @@ test("ko.observable.toObservable()", () => {
 	ok(notifications.length == 3
 		&& notifications[2].kind == "N"
 		&& notifications[2].value === 4,
-		"multiple changes change");
+		"multiple changes");
 
 	s.dispose();
 
@@ -110,4 +112,71 @@ test("ko.observable.toObservable()", () => {
 	equal(notifications.length, 3, "have no notifications after unsubscribe");
 
 	equal(xo.getSubscriptionsCount(), 0, "no subscriptions after unsubscribe");
+});
+
+test("ko.observable.toObservableWithReplyLatest()", () => {
+	var xo = ko.observable(1);
+	var xs = xo.toObservableWithReplyLatest();
+
+	var notifications: Rx.INotification<number>[] = [];
+
+	equal(xo.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
+
+	var s = xs.materialize().subscribe(n => notifications.push(n));
+
+	equal(xo.getSubscriptionsCount(), 1, "Count subscriptions after subscribe");
+
+	ok(notifications.length == 1
+		&& notifications[0].kind == "N"
+		&& notifications[0].value === 1,
+		"have got notification with latest after subscription before first change");
+
+	xo(2);
+
+	ok(notifications.length == 2
+		&& notifications[1].kind == "N"
+		&& notifications[1].value === 2,
+		"change notification");
+
+	s.dispose();
+
+	xo(3);
+
+	equal(notifications.length, 2, "have no notifications after unsubscribe");
+
+	equal(xo.getSubscriptionsCount(), 0, "no subscriptions after unsubscribe");
+});
+
+test("ko.computed.toObservableWithReplyLatest()", () => {
+	var xo = ko.observable(1);
+	var xc = ko.computed(() => xo() * 2);
+	var xs = xc.toObservableWithReplyLatest();
+
+	var notifications: Rx.INotification<number>[] = [];
+
+	equal(xc.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
+
+	var s = xs.materialize().subscribe(n => notifications.push(n));
+
+	equal(xc.getSubscriptionsCount(), 1, "Count subscriptions after subscribe");
+
+	ok(notifications.length == 1
+		&& notifications[0].kind == "N"
+		&& notifications[0].value === 2,
+		"have got notification with latest after subscription before first change");
+
+	xo(2);
+
+	ok(notifications.length == 2
+		&& notifications[1].kind == "N"
+		&& notifications[1].value === 4,
+		"change notification");
+
+	s.dispose();
+
+	xo(3);
+
+	equal(notifications.length, 2, "have no notifications after unsubscribe");
+
+	equal(xc.getSubscriptionsCount(), 0, "no subscriptions after unsubscribe");
 });

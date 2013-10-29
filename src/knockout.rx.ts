@@ -9,6 +9,13 @@
 		return Rx.Observable.createWithDisposable(observer => (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event));
 	}
 
+	function ko2rxReply<T>(event?: string): Rx.IObservable<T> {
+		return Rx.Observable.createWithDisposable(observer => {
+			observer.onNext((<KnockoutObservable<T>>this).peek());
+			return (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event); // KnockoutSubscription implements Rx._IDisposable
+		});
+	}
+
 	function rx2koSubscribable<T>(): KnockoutSubscribable<T> {
 		var subscribable = new ko.subscribable<T>();
 		var subscriptionCount = 0;
@@ -29,6 +36,7 @@
 				dispose: () => {
 					if (disposable) {
 						disposable.dispose();
+						disposable = null;
 						subscriptionCount--;
 					}
 				}
@@ -47,6 +55,8 @@
 	}
 
 	ko.subscribable.fn.toObservable = ko2rx;
+	ko.observable.fn.toObservableWithReplyLatest = ko2rxReply;
+	ko.computed.fn.toObservableWithReplyLatest = ko2rxReply;
 	rxObservableProto.toKoSubscribable = rx2koSubscribable;
 	rxObservableProto.toKoObservable = rx2koObservable;
 })();
