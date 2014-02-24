@@ -1,3 +1,4 @@
+/// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
 (function () {
     var rxObservableProto = Rx.Observable.prototype;
     function noop() {
@@ -5,16 +6,17 @@
 
     function ko2rx(event) {
         var _this = this;
+        // KnockoutSubscription implements Rx._IDisposable
         return Rx.Observable.createWithDisposable(function (observer) {
-            return (_this).subscribe(observer.onNext, observer, event);
+            return _this.subscribe(observer.onNext, observer, event);
         });
     }
 
     function ko2rxReply(event) {
         var _this = this;
         return Rx.Observable.createWithDisposable(function (observer) {
-            observer.onNext((_this).peek());
-            return (_this).subscribe(observer.onNext, observer, event);
+            observer.onNext(_this.peek());
+            return _this.subscribe(observer.onNext, observer, event);
         });
     }
 
@@ -30,7 +32,7 @@
                 throw new Error("Unknown event '" + event + "'");
 
             subscriptionCount++;
-            var disposable = (_this).subscribe(observer) || Rx.Disposable.empty;
+            var disposable = _this.subscribe(observer) || Rx.Disposable.empty;
             return {
                 dispose: function () {
                     if (disposable) {
@@ -51,7 +53,7 @@
 
     function rx2koObservable(initialValue) {
         var observable = ko.observable(initialValue);
-        (this).subscribe(observable);
+        this.subscribe(observable);
         return observable;
     }
 

@@ -1,16 +1,16 @@
 /// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
 
 (function () {
-	var rxObservableProto: Rx.IObservable<any> = Rx.Observable.prototype;
+	var rxObservableProto = <Rx.Observable<any>>(<any>Rx.Observable).prototype;
 	function noop() { }
 
-	function ko2rx<T>(event?: string): Rx.IObservable<T> {
+	function ko2rx<T>(event?: string): Rx.Observable<T> {
 		// KnockoutSubscription implements Rx._IDisposable
-		return Rx.Observable.createWithDisposable(observer => (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event));
+		return Rx.Observable.createWithDisposable<T>(observer => (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event));
 	}
 
-	function ko2rxReply<T>(event?: string): Rx.IObservable<T> {
-		return Rx.Observable.createWithDisposable(observer => {
+	function ko2rxReply<T>(event?: string): Rx.Observable<T> {
+		return Rx.Observable.createWithDisposable<T>(observer => {
 			observer.onNext((<KnockoutObservable<T>>this).peek());
 			return (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event); // KnockoutSubscription implements Rx._IDisposable
 		});
@@ -31,7 +31,7 @@
 				throw new Error("Unknown event '" + event + "'");
 
 			subscriptionCount++;
-			var disposable = (<Rx.IObservable<T>>this).subscribe(observer) || Rx.Disposable.empty;
+			var disposable = (<Rx.Observable<T>>this).subscribe(observer) || Rx.Disposable.empty;
 			return {
 				dispose: () => {
 					if (disposable) {
@@ -50,7 +50,7 @@
 
 	function rx2koObservable<T>(initialValue?: T): KnockoutObservable<T> {
 		var observable = ko.observable(initialValue);
-		(<Rx.IObservable<T>>this).subscribe(observable);
+		(<Rx.Observable<T>>this).subscribe(observable);
 		return observable;
 	}
 

@@ -80,7 +80,7 @@ test("ko.observable.toObservable()", () => {
 	var xo = ko.observable(1);
 	var xs = xo.toObservable();
 
-	var notifications: Rx.INotification<number>[] = [];
+	var notifications: Rx.Notification<number>[] = [];
 
 	equal(xo.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
 
@@ -118,7 +118,7 @@ test("ko.observable.toObservableWithReplyLatest()", () => {
 	var xo = ko.observable(1);
 	var xs = xo.toObservableWithReplyLatest();
 
-	var notifications: Rx.INotification<number>[] = [];
+	var notifications: Rx.Notification<number>[] = [];
 
 	equal(xo.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
 
@@ -152,7 +152,7 @@ test("ko.computed.toObservableWithReplyLatest()", () => {
 	var xc = ko.computed(() => xo() * 2);
 	var xs = xc.toObservableWithReplyLatest();
 
-	var notifications: Rx.INotification<number>[] = [];
+	var notifications: Rx.Notification<number>[] = [];
 
 	equal(xc.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
 
