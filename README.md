@@ -1,4 +1,4 @@
-# knockout.rx <sup>0.1 RC</sup>
+# knockout.rx <sup>1.0</sup>
 
 Reactive Extensions bindings for the KnockoutJS
 
@@ -8,7 +8,7 @@ Reactive Extensions bindings for the KnockoutJS
 
 Package: [knockout.rx](https://www.nuget.org/packages/knockout.rx/)
 ```
-PM> Install-Package knockout.rx -Pre
+PM> Install-Package knockout.rx
 ```
 
 Or you can download it from [Releases](https://github.com/Igorbek/knockout.rx/releases) of the project.
