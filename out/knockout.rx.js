@@ -1,3 +1,6 @@
+// Reactive Extensions bindings for the KnockoutJS v1.0
+// https://github.com/Igorbek/knockout.rx
+// by Igor Oleinikov <https://github.com/Igorbek>
 /// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
 /// <reference path="../external/DefinitelyTyped/requirejs/require.d.ts"/>
 

@@ -1,5 +1,5 @@
-/// <reference path="../../external/DefinitelyTyped/qunit/qunit.d.ts"/>
-/// <reference path="../../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
+/// <reference path="../external/DefinitelyTyped/qunit/qunit.d.ts"/>
+/// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
 
 test("Rx.IObservable.toKoObservable()", () => {
 	var xs = new Rx.Subject<number>();
