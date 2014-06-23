@@ -114,6 +114,54 @@ test("ko.observable.toObservable()", () => {
 	equal(xo.getSubscriptionsCount(), 0, "no subscriptions after unsubscribe");
 });
 
+test("ko.observable.toSubject", () => {
+	var xo = ko.observable(1);
+	var xs = xo.toSubject();
+
+	var notifications: Rx.Notification<number>[] = [];
+
+	equal(xo.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
+
+	var s = xs.materialize().subscribe(n => notifications.push(n));
+
+	equal(xo.getSubscriptionsCount(), 1, "Count subscriptions after subscribe");
+
+	equal(notifications.length, 0, "no notifications before any change");
+
+	xo(2);
+
+	ok(notifications.length == 1
+		&& notifications[0].kind == "N"
+		&& notifications[0].value === 2,
+		"have got notification after first change");
+
+	xo(3);
+	xo(4);
+
+	ok(notifications.length == 3
+		&& notifications[2].kind == "N"
+		&& notifications[2].value === 4,
+		"multiple changes");
+
+	xs.onNext(5);
+
+	equal(xo(), 5, "changed by subject onNext");
+
+	ok(notifications.length == 4
+		&& notifications[3].kind == "N"
+		&& notifications[3].value === 5,
+		"notified by subject onNext");
+
+	s.dispose();
+
+	xo(6);
+	xs.onNext(7);
+
+	equal(notifications.length, 4, "have no notifications after unsubscribe");
+	equal(xo.getSubscriptionsCount(), 0, "no subscriptions after unsubscribe");
+	equal(xo(), 7, "changed by subject after unsubscribe");
+});
+
 test("ko.observable.toObservableWithReplyLatest()", () => {
 	var xo = ko.observable(1);
 	var xs = xo.toObservableWithReplyLatest();

@@ -1,23 +1,41 @@
 /// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
-(function () {
-    var rxObservableProto = Rx.Observable.prototype;
+/// <reference path="../external/DefinitelyTyped/requirejs/require.d.ts"/>
+
+(function (factory) {
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object") {
+        factory(require("rx"), require("knockout"));
+    } else if (typeof define === "function" && define["amd"]) {
+        define(["rx", "knockout"], factory);
+    } else {
+        factory(Rx, ko);
+    }
+}(function (rx, ko) {
+    var rxObservableProto = rx.Observable.prototype;
+
     function noop() {
     }
 
     function ko2rx(event) {
         var _this = this;
         // KnockoutSubscription implements Rx._IDisposable
-        return Rx.Observable.createWithDisposable(function (observer) {
+        return rx.Observable.createWithDisposable(function (observer) {
             return _this.subscribe(observer.onNext, observer, event);
         });
     }
 
     function ko2rxReply(event) {
         var _this = this;
-        return Rx.Observable.createWithDisposable(function (observer) {
+        return rx.Observable.createWithDisposable(function (observer) {
             observer.onNext(_this.peek());
             return _this.subscribe(observer.onNext, observer, event);
         });
+    }
+
+    function ko2rxSubject() {
+        var observable = this;
+        return rx.Subject.create(rx.Observer.create(function (value) {
+            return observable(value);
+        }), observable.toObservable());
     }
 
     function rx2koSubscribable() {
@@ -59,8 +77,9 @@
 
     ko.subscribable.fn.toObservable = ko2rx;
     ko.observable.fn.toObservableWithReplyLatest = ko2rxReply;
+    ko.observable.fn.toSubject = ko2rxSubject;
     ko.computed.fn.toObservableWithReplyLatest = ko2rxReply;
     rxObservableProto.toKoSubscribable = rx2koSubscribable;
     rxObservableProto.toKoObservable = rx2koObservable;
-})();
+}));
 //# sourceMappingURL=knockout.rx.js.map
