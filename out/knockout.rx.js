@@ -75,11 +75,29 @@
         return observable;
     }
 
+    function rxSubject2koObservable(initialValue) {
+        var subject = this;
+        var observable = ko.observable(initialValue);
+        var changingBySubject = false;
+
+        observable.subscribe(function (value) {
+            return !changingBySubject && subject.onNext(value);
+        });
+        subject.subscribe(function (value) {
+            changingBySubject = true;
+            observable(value);
+            changingBySubject = false;
+        });
+
+        return observable;
+    }
+
     ko.subscribable.fn.toObservable = ko2rx;
     ko.observable.fn.toObservableWithReplyLatest = ko2rxReply;
     ko.observable.fn.toSubject = ko2rxSubject;
     ko.computed.fn.toObservableWithReplyLatest = ko2rxReply;
     rxObservableProto.toKoSubscribable = rx2koSubscribable;
     rxObservableProto.toKoObservable = rx2koObservable;
+    rx.Subject.prototype.toKoObservable = rxSubject2koObservable;
 }));
 //# sourceMappingURL=knockout.rx.js.map

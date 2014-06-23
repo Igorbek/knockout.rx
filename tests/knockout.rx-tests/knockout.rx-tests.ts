@@ -76,6 +76,38 @@ test("Rx.IObservable.toKoSubscribable() - onComplete", () => {
 	xs.onCompleted();
 });
 
+test("Rx.Subject.toKoObservable", () => {
+	var xs = new Rx.Subject<number>();
+	var xo = xs.toKoObservable();
+
+	var notifications: Rx.Notification<number>[] = [];
+
+	//equal(xo.getSubscriptionsCount(), 0, "no subscriptions before subscribe");
+
+	var s = xs.materialize().subscribe(n => notifications.push(n));
+
+	ok(notifications.length == 0,
+		"no notifications before any change");
+
+	//equal(xo.getSubscriptionsCount(), 1, "just one subscription after subject subscribe");
+
+	xs.onNext(1);
+
+	equal(xo(), 1, "changed after subject's onNext");
+	ok(notifications.length == 1
+		&& notifications[0].kind == "N"
+		&& notifications[0].value == 1,
+		"notified after subject's onNext");
+
+	xo(2);
+
+	equal(xo(), 2, "changed after ko's set");
+	ok(notifications.length == 2
+		&& notifications[1].kind == "N"
+		&& notifications[1].value == 2,
+		"notified after ko's set");
+});
+
 test("ko.observable.toObservable()", () => {
 	var xo = ko.observable(1);
 	var xs = xo.toObservable();

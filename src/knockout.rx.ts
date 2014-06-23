@@ -1,3 +1,7 @@
+// Reactive Extensions bindings for the KnockoutJS v1.0
+// https://github.com/Igorbek/knockout.rx
+// by Igor Oleinikov <https://github.com/Igorbek>
+
 /// <reference path="../external/DefinitelyTyped/knockout.rx/knockout.rx.d.ts"/>
 /// <reference path="../external/DefinitelyTyped/requirejs/require.d.ts"/>
 
@@ -74,10 +78,26 @@ declare var module: any;
 		return observable;
 	}
 
+	function rxSubject2koObservable<T>(initialValue?: T): KnockoutObservable<T> {
+		var subject = <Rx.Subject<T>>this;
+		var observable = ko.observable(initialValue);
+		var changingBySubject = false;
+
+		observable.subscribe(value => !changingBySubject && subject.onNext(value));
+		subject.subscribe(value => {
+			changingBySubject = true;
+			observable(value);
+			changingBySubject = false;
+		});
+
+		return observable;
+	}
+
 	ko.subscribable.fn.toObservable = ko2rx;
 	ko.observable.fn.toObservableWithReplyLatest = ko2rxReply;
 	ko.observable.fn.toSubject = ko2rxSubject;
 	ko.computed.fn.toObservableWithReplyLatest = ko2rxReply;
 	rxObservableProto.toKoSubscribable = rx2koSubscribable;
 	rxObservableProto.toKoObservable = rx2koObservable;
+	rx.Subject.prototype.toKoObservable = rxSubject2koObservable;
 }));
