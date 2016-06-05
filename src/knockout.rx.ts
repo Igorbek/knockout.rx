@@ -23,11 +23,11 @@ declare var module: any;
 
 	function ko2rx<T>(event?: string): Rx.Observable<T> {
 		// KnockoutSubscription implements Rx._IDisposable
-		return rx.Observable.createWithDisposable<T>(observer => (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event));
+		return rx.Observable.create<T>(observer => (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event));
 	}
 
 	function ko2rxReply<T>(event?: string): Rx.Observable<T> {
-		return rx.Observable.createWithDisposable<T>(observer => {
+		return rx.Observable.create<T>(observer => {
 			observer.onNext((<KnockoutObservable<T>>this).peek());
 			return (<KnockoutSubscribable<T>>this).subscribe(observer.onNext, observer, event); // KnockoutSubscription implements Rx._IDisposable
 		});
